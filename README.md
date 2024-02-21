@@ -1,18 +1,52 @@
-# How to Install
-Before library installation install required Bioconductor and CRAN packages through this code:
+# **Bispecific Antibody Markers Identification using Bulk RNA Sequencing Data**
+
+The R package `bsAbsFinder` enlists the bispecific antibody marker pairs based on OCTAD bulk RNA sequencing data. 
+Kindly refer provided Rmarkdown for code. 
+
+## **Requirements**
+You need to download following from data folder:
+- basabsfinder_0.0.0.9001.tar.gz 
+- octad.counts.and.tpm.h5
+
+## **Installation**
+
 ```r
-install.packages("basabsfinder_0.0.0.9001.tar.gz",repos=NULL,type='source')
-BiocManager::install("EnsDb.Hsapiens.v86")
-library(edgeR)
-```
-In addition, you will need octad package. It can be find [there](https://github.com/Bin-Chen-Lab/OCTAD)
+install.packages('BiocManager')
+BiocManager::install(c("DESeq2","edgeR","EDASeq","RUVSeq","EnsDb.Hsapiens.v86"))
 
-Install the package:
-```
+library(devtools)
+install_github("Bin-Chen-Lab/octad.db")
+install_github("Bin-Chen-Lab/octad")
+
+install.packages("~/Downloads/basabsfinder_0.0.0.9001.tar.gz", repos=NULL, type='source')
 devtools::install_github('Lionir/bsAbsFinder')
-```
 
-# Examples
+install.packages(c('cluster','dplyr','ggplot2','ggpubr'))
+```
+## **Input**
+
+To use the package, provide the name of a particular cancer (case) and its normal tissue (control). The code then extracts the expression matrix for those samples, performs DE analysis, and identifies marker pairs.
+
+## **Output**
+
+The generated output consists of a candidate marker pair table, featuring pair scores and p-values. The pair score is derived from the marker genes' or antigens' ability to distinguish between case and control samples. Marker pairs include instances where:
+- Both markers show high expression in case samples
+- Both markers show high expression in control samples
+- Either marker shows high expression in either case or control sample
+
+Given the focus on identifying candidates for bispecific antibodies, interest lies specifically in pairs where both markers are highly expressed in case samples. Therefore, the output table includes a 'case_greater' column employing Boolean logic.
+
+For further refinement, the generated table should be filtered based on desired cutoffs for pair score, p-value, and specifically selecting those pairs where the 'case_greater' column reads 'TRUE_TRUE,' indicating higher expression of both markers in case samples than control samples. Also, both markers should have zero to low expression in healthy vital organs.
+
+## **Visualization**
+
+Total 4 plots are generated (Manuscript Fig 2):
+- Volcano plot for all marker pairs based on pair score
+- Marker frequency among top pairs
+- Expression pattern of top markers in case, control, and healthy vital organs
+- Expression pattern of top pair in case, control, and healthy vital organs
+
+## **Example : Bispecific Antibody Identification for HCC**
 
 ```
 library(basabsfinder)
