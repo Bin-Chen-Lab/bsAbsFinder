@@ -5,7 +5,7 @@ The R package `bsAbsFinder` enlists the bispecific antibody marker pairs based o
 You can refer Example code for Hepatocellular Carcinoma provided below.
 
 Also, sample code folder includes similar code for Prostate Cancer.   
-Refer Rmarkdown file (BSAB_Prostate.Rmd) and its output (BSAB_Prostate1.pdf).
+Refer Rmarkdown file (BSAB_Prostate.Rmd) and its output (BSAB_Prostate.pdf).
 
 ## **Requirements**
 You need to download following from data folder:
