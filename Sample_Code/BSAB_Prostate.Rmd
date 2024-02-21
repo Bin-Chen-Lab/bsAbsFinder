@@ -222,7 +222,7 @@ ggplot(marker_expr, aes(x = OR51E2, y = ILDR1 , color = Category)) +
 ```{r}
 # Save all important generated results
 
-#save(list=c('case_expr','control_expr','case_with_control_expr','case_with_control_expr2','DE','DE1','healthy_tissues_expr','small_res','small_res_selective','marker_expr','healthy_tissues','marker_counts'),file="~/Downloads/BSAB_PROSTATE.RData")
+save(list=c('case_expr','control_expr','case_with_control_expr','case_with_control_expr2','DE','DE1','healthy_tissues_expr','small_res','small_res_selective','marker_expr','healthy_tissues','marker_counts'),file="~/Downloads/BSAB_PROSTATE.RData")
 
 ```
 
