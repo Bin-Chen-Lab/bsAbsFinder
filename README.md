@@ -1,7 +1,7 @@
 # **Bispecific Antibody Markers Identification using Bulk RNA Sequencing Data**
 
 The R package `bsAbsFinder` enlists the bispecific antibody marker pairs based on OCTAD bulk RNA sequencing data. 
-Kindly refer provided Rmarkdown for code. 
+Sample Code folder includes the Rmarkdown file (BSAB_Prostate.Rmd) and its output (BSAB_Prostate1.pdf).
 
 ## **Requirements**
 You need to download following from data folder:
