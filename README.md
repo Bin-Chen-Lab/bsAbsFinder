@@ -1,4 +1,4 @@
-# **Bispecific Antibody Markers Identification using Bulk RNA Sequencing Data**
+# **Bispecific Antibody Targets Identification using Bulk RNA Sequencing Data**
 
 The R package `bsAbsFinder` enlists the bispecific antibody marker pairs based on OCTAD bulk RNA sequencing data. 
 
@@ -29,7 +29,28 @@ install.packages(c('cluster','dplyr','ggplot2','ggpubr'))
 ```
 ## **Input**
 
-To use the package, provide the name of a particular cancer (case) and its normal tissue (control). The code then extracts the expression matrix for those samples, performs DE analysis, and identifies marker pairs.
+To use the package, provide the name of a particular cancer (case) and its normal tissue (control).
+
+```r
+HCC_primary=subset(phenoDF,cancer=='liver hepatocellular carcinoma'&sample.type == 'primary') #select HCC data
+case_id=HCC_primary$sample.id #select HCC sample IDs
+Healthy=subset(phenoDF,sample.type=='normal'&biopsy.site=='LIVER')#select Normal liver data
+control_id=Healthy$sample.id #select Normal liver sample IDs
+```
+Just replace the 'liver hepatocellular carcinoma' and 'LIVER' in above code with 
+other cancer and its corresponding healthy tissue. 
+Following code snippet displays the number of samples for various cancers and normal tissues. Select from that list.
+
+```r
+total_cancer_count=as.data.frame(table(phenoDF$cancer))
+total_cancer_count=total_cancer_count[total_cancer_count$Var1!="normal",]
+total_cancer_count=total_cancer_count[order(total_cancer_count$Freq,decreasing = T),]
+
+total_normal=phenoDF[phenoDF$sample.type=="normal",c(1:3)]
+total_normal_count=as.data.frame(table(total_normal$biopsy.site))
+total_normal_count=total_normal_count[order(total_normal_count$Var1),]
+```
+The code then extracts the expression matrix for those samples, performs DE analysis, and identifies marker pairs.
 
 ## **Output**
 
@@ -91,8 +112,8 @@ expression_disp <- estimateTagwiseDisp(expression_disp)
 DE <- exactTest(expression_disp, pair=c(1,2)) # compare groups 1 and 2
 DE=DE$table
 DE$padj=p.adjust(DE$PValue,method='BH')
-DE=subset(DE,padj<0.01&abs(logFC)>1.3)#Eugene's original cutoff
-DE=subset(DE,padj<0.01&abs(logFC)>1)#Shreya's cut off to include CD3 as per reviewer
+DE=subset(DE,padj<0.01&abs(logFC)>1.3)#Original cutoff
+#DE=subset(DE,padj<0.01&abs(logFC)>1)# cut off reduced to include CD3 as per reviewer query
 
 head(DE) #list of DEs
 #filter out only surface-expressed DE genes. Just to speed up. 
@@ -161,46 +182,14 @@ pdf("~/Downloads/BSAB_marker.pdf")
       scale_fill_manual(values = c("red", "blue",rep("gray", length(sample_order) - 2))) +
       labs(x = "Biopsy Site", y = names(marker_expr)[i], title = paste("Boxplot of", names(marker_expr)[i], "by Biopsy Site")) +
       theme_minimal() +
-      guides(fill = FALSE)
+      guides(fill = FALSE)+
+      stat_compare_means(method = "t.test",label="p.signif",ref.group = "HCC")
     
-    print(gg)
-      
+    print(gg)    
   }
 }
 
 dev.off()
 
-###############################################################
-
-#Validation purpose
-
-hcc_with_liver_2=ensg_to_hgnc(hcc_with_liver,select_surface=FALSE)
-
-exp=hcc_with_liver_2[rownames(hcc_with_liver_2)%in%c('GPC3','MUC13','CD3D','CD3E','CD3G','MSLN'),]
-
-exp=exp[order(rownames(exp)),]
-
-exp=as.data.frame(t(exp))
-
-exp$Sample=ifelse(rownames(exp)%in%Healthy$sample.id,"Normal_Liver","HCC")
-
-marker_list=colnames(exp)[1:6]
-
-pdf("~/Downloads/BSAB_HCC_validation.pdf")
-{
-  for (i in 1:length(marker_list)) {
-    gg <- ggplot(exp, aes(x = Sample, y = exp[[i]], fill = Sample)) +
-      geom_boxplot() +
-      scale_fill_manual(values = c("red", "blue",guide = "none")) +
-      labs(x = "Biopsy Site", y = names(expr)[i], title = paste("Marker expression by biopsy site: ", names(exp)[i])) +
-      theme(axis.text.x = element_text(angle=45, hjust=1)) +
-      #guides(fill = none)+
-      stat_compare_means(method = "t.test",label="p.signif") #ref.group = "HCC"
-     
-    print(gg)
-    
-  }
-}
-
-dev.off()
 ```
+Plese check Sample_Code folder which includes similar analysis for Prostate Cancer. The R Markdown pdf includes sample plots. 
