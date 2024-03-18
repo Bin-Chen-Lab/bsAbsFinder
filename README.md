@@ -73,6 +73,14 @@ Total 4 plots are generated (Manuscript Fig 2):
 
 ## **Example : Bispecific Antibody Identification for HCC**
 ```r
+
+library(edgeR)
+library(bsabsfinder)
+library(cluster)
+library(dplyr)
+library(ggplot2)
+library(ggpubr)
+
 case=subset(phenoDF,cancer=='liver hepatocellular carcinoma'&sample.type == 'primary') 
 case_id=case$sample.id #select cases
 control=subset(phenoDF,sample.type=='normal'&biopsy.site=='LIVER')
@@ -216,8 +224,6 @@ names(marker_counts_df) <- c("Marker", "Frequency")
 
 marker_counts_df <- marker_counts_df[order(-marker_counts_df$Frequency), ]
 
-marker_counts_df=marker_counts_df[marker_counts_df$Marker%in%marker_list,]
-
 marker_counts_df$Marker <- factor(marker_counts_df$Marker, levels = marker_counts_df$Marker)
 
 proxy_var <- as.numeric(marker_counts_df$Frequency)
@@ -248,7 +254,7 @@ marker_expr$Category[marker_expr$Sample=="LIVER"]="Control_Liver_Normal"
 marker_expr$Category[marker_expr$Sample%in%c("HEART","BRAIN", "LUNG","KIDNEY")]="Healthy_Normal"
 
 
-pdf("~/Desktop/BSAB_HCC_marker_pair.pdf")
+pdf("~/Desktop/BSAB_HCC_marker_pair.pdf") # PLOT FIG 2A and 2B
 
 {
 
