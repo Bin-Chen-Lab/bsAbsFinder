@@ -71,7 +71,7 @@ Total 4 plots are generated (Manuscript Fig 2):
 - Expression pattern of top markers in case, control, and healthy vital organs
 - Expression pattern of top pair in case, control, and healthy vital organs
 
-## **Example : Bispecific Antibody Identification for HCC**
+## **Example : Bispecific Antibody Target Identification for HCC**
 ```r
 
 library(edgeR)
