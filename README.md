@@ -279,7 +279,6 @@ markerpair1=ggplot(marker_expr, aes(x = PLVAP, y = GPC3 , color = Category)) +
   geom_point() +
   labs(x = "PLVAP", y = "GPC3", title = "Scatter Plot with Categorical Color") +
   scale_color_manual(values = c("Case_HCC" = "red", "Control_Liver_Normal" = "blue", "Healthy_Normal" = "gray")) +
-  #scale_shape_manual(values = c("Case_Prostate_Cancer" = 16, "Control_Prostate_Normal" = 16, "Healthy_Normal" = 4), guide = "none") +
   theme_minimal()
 
 markerpair2=ggplot(marker_expr, aes(x = GPC3, y = MUC13 , color = Category)) +
@@ -297,7 +296,7 @@ print(markerpair2)
 
 dev.off()
 
-save(list=c('case_expr','control_expr','case_with_control_expr','case_with_control_expr2','DE','DE1','healthy_tissues_expr','small_res','small_res_selective','marker_expr','healthy_tissues','marker_counts'),file="~/Downloads/BSAB_HCC.RData")
+save(list=c('case_expr','control_expr','case_with_control_expr','case_with_control_expr2','DE','DE1','healthy_tissues_expr','small_res','small_res_selective','marker_expr','healthy_tissues','marker_counts'),file="BSAB_HCC.RData")
 
 
 ```
