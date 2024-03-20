@@ -129,12 +129,30 @@ dataframe_for_computation=as.data.frame(t(case_with_control_expr))
 small_res=compute_bsabs(antigene_1=colnames(dataframe_for_computation),data_input=dataframe_for_computation,pheno_input=phenotype_vector)
 head(small_res)
 
+result_table=small_res
+result_table=subset(result_table,pair_score>quantile(result_table$pair_score,.90))
+result_table=subset(result_table,pair_score>2)
+result_table=subset(result_table,case_greater=='TRUE_TRUE')
+result_table=result_table[order(result_table$pair_score,decreasing = T),]
+result_table$antigen_1=gsub('-','_',result_table$antigen_1)
+result_table$antigen_2=gsub('-','_',result_table$antigen_2)
+boxplot=table(c(result_table$antigen_1,result_table$antigen_2))/nrow(result_table)
+boxplot=boxplot[order(boxplot,decreasing = T)][1:30]
+
+
+pdf("BSAB_FIG2C.pdf", width = 10, height = 4)
+{
+  print(barplot(boxplot,las=2, main='Density of genes across bispecific pairs',cex.names=0.9,col=c('black','white'),ylim=c(0,0.5)))
+  
+}
+
+dev.off()
+
+
 # FIG 2D
 plot_bsabs(small_res,label='case',pval_cut_off=0.01,pair_score_cut_off=quantile(small_res$pair_score,.99)) 
 
-
 #subset result table to filter out only top pairs:
-
 small_res=small_res[small_res$case_greater=="TRUE_TRUE",]
 
 #ordering as per pair score , highest score should be at top
@@ -146,7 +164,6 @@ small_res_selective=small_res[c(1:20),]
 # unique marker genes in top 20 pairs
 marker_list=unique(c(small_res_selective$antigen_1,small_res_selective$antigen_2))
 marker_list
-
 
 
 # PLOT FIG 2E with STATS
