@@ -10,7 +10,7 @@ Refer Rmarkdown file (BSAB_Prostate.Rmd) and its output (BSAB_Prostate.pdf).
 ## **Requirements**
 You need to download following from data folder:
 - basabsfinder_0.0.0.9001.tar.gz 
-- octad.counts.and.tpm.h5
+- octad.counts.and.tpm.h5 https://chenlab-data-public.s3.amazonaws.com/octad/octad.counts.and.tpm.h5
 
 ## **Installation**
 
