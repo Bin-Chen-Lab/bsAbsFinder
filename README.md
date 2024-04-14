@@ -1,16 +1,16 @@
-# **Bispecific Antibody Markers Identification using Bulk RNA Sequencing Data**
+# **Bispecific Antibody Targets Identification using Bulk RNA Sequencing Data**
 
 The R package `bsAbsFinder` enlists the bispecific antibody marker pairs based on OCTAD bulk RNA sequencing data. 
 
 You can refer Example code for Hepatocellular Carcinoma provided below.
 
 Also, sample code folder includes similar code for Prostate Cancer.   
-Refer Rmarkdown file (BSAB_Prostate.Rmd) and its output (BSAB_Prostate1.pdf).
+Refer Rmarkdown file (BSAB_Prostate.Rmd) and its output (BSAB_Prostate.pdf).
 
 ## **Requirements**
 You need to download following from data folder:
 - basabsfinder_0.0.0.9001.tar.gz 
-- octad.counts.and.tpm.h5
+- octad.counts.and.tpm.h5 https://chenlab-data-public.s3.amazonaws.com/octad/octad.counts.and.tpm.h5
 
 ## **Installation**
 
@@ -29,7 +29,28 @@ install.packages(c('cluster','dplyr','ggplot2','ggpubr'))
 ```
 ## **Input**
 
-To use the package, provide the name of a particular cancer (case) and its normal tissue (control). The code then extracts the expression matrix for those samples, performs DE analysis, and identifies marker pairs.
+To use the package, provide the name of a particular cancer (case) and its normal tissue (control).
+
+```r
+case=subset(phenoDF,cancer=='liver hepatocellular carcinoma'&sample.type == 'primary') 
+case_id=case$sample.id #select cases
+control=subset(phenoDF,sample.type=='normal'&biopsy.site=='LIVER')
+control_id=control$sample.id
+```
+Just replace the 'liver hepatocellular carcinoma' and 'LIVER' in above code with 
+other cancer and its corresponding healthy tissue. 
+Following code snippet displays the number of samples for various cancers and normal tissues. Select from that list.
+
+```r
+total_cancer_count=as.data.frame(table(phenoDF$cancer))
+total_cancer_count=total_cancer_count[total_cancer_count$Var1!="normal",]
+total_cancer_count=total_cancer_count[order(total_cancer_count$Freq,decreasing = T),]
+
+total_normal=phenoDF[phenoDF$sample.type=="normal",c(1:3)]
+total_normal_count=as.data.frame(table(total_normal$biopsy.site))
+total_normal_count=total_normal_count[order(total_normal_count$Var1),]
+```
+The code then extracts the expression matrix for those samples, performs DE analysis, and identifies marker pairs.
 
 ## **Output**
 
@@ -50,35 +71,41 @@ Total 4 plots are generated (Manuscript Fig 2):
 - Expression pattern of top markers in case, control, and healthy vital organs
 - Expression pattern of top pair in case, control, and healthy vital organs
 
-## **Example : Bispecific Antibody Identification for HCC**
+## **Example : Bispecific Antibody Target Identification for HCC**
+```r
 
-```
-HCC_primary=subset(phenoDF,cancer=='liver hepatocellular carcinoma'&sample.type == 'primary') #select HCC data
-case_id=HCC_primary$sample.id #select cases
-Healthy=subset(phenoDF,sample.type=='normal'&biopsy.site=='LIVER')#select Normal liver data
-control_id=Healthy$sample.id
+library(edgeR)
+library(bsabsfinder)
+library(cluster)
+library(dplyr)
+library(ggplot2)
+library(ggpubr)
 
-cases=loadOctadCounts(case_id,type='tpm',file='~/Downloads/octad.counts.and.tpm.h5')
-cases=as.data.frame(cases)
-controls=loadOctadCounts(control_id ,type='tpm',file='~/Downloads/octad.counts.and.tpm.h5') #Windows
-controls=as.data.frame(controls)
+case=subset(phenoDF,cancer=='liver hepatocellular carcinoma'&sample.type == 'primary') 
+case_id=case$sample.id #select cases
+control=subset(phenoDF,sample.type=='normal'&biopsy.site=='LIVER')
+control_id=control$sample.id
+
+case_expr=loadOctadCounts(case_id,type='tpm',file='~/Downloads/octad.counts.and.tpm.h5')
+case_expr=as.data.frame(case_expr)
+control_expr=loadOctadCounts(control_id ,type='tpm',file='~/Downloads/octad.counts.and.tpm.h5') 
+control_expr=as.data.frame(control_expr)
 
 #final data
-hcc_with_liver=cbind(cases,controls)
+case_with_control_expr=cbind(case_expr,control_expr)
 
 #convert ensg to hgnc and select surface-expressed genes according to  compartments.jensenlab.org
-hcc_with_liver=ensg_to_hgnc(hcc_with_liver,select_surface=TRUE)
-hcc_with_liver_2=ensg_to_hgnc(hcc_with_liver,select_surface=FALSE)
+case_with_control_expr=ensg_to_hgnc(case_with_control_expr,select_surface=TRUE)
 
-#create phenotype vector
-phenotype_vector=as.factor(c(rep('case',ncol(cases)),rep('control',ncol(controls))))
+
+phenotype_vector=as.factor(c(rep('case',ncol(case_expr)),rep('control',ncol(control_expr))))
 
 ################################
 #perform DE to filter out non-significant genes to speed up the computation
 ################################
-annotation=data.frame(sample=c(colnames(cases),colnames(controls)),phenotype=c(rep('cancer',length(colnames(cases))),rep('control',length(colnames(controls)))))
+annotation=data.frame(sample=c(colnames(case_expr),colnames(control_expr)),phenotype=c(rep('cancer',length(colnames(case_expr))),rep('control',length(colnames(control_expr)))))
 annotation$phenotype=as.factor(annotation$phenotype)
-expression=DGEList(counts=as.matrix(hcc_with_liver),group=annotation$phenotype)
+expression=DGEList(counts=as.matrix(case_with_control_expr),group=annotation$phenotype)
 dim(expression)
 keep <- rowSums(cpm(expression)>100) >= 2
 expression <- expression[keep,]
@@ -91,40 +118,68 @@ expression_disp <- estimateTagwiseDisp(expression_disp)
 DE <- exactTest(expression_disp, pair=c(1,2)) # compare groups 1 and 2
 DE=DE$table
 DE$padj=p.adjust(DE$PValue,method='BH')
-DE=subset(DE,padj<0.01&abs(logFC)>1.3)#Eugene's original cutoff
-DE=subset(DE,padj<0.01&abs(logFC)>1)#Shreya's cut off to include CD3 as per reviewer
 
-head(DE) #list of DEs
+DE1=subset(DE,padj<0.01&abs(logFC)>1.3) # The cutoff criteria can be changed 
+
 #filter out only surface-expressed DE genes. Just to speed up. 
-hcc_with_liver=hcc_with_liver[row.names(hcc_with_liver)%in%row.names(DE),]
+case_with_control_expr=case_with_control_expr[row.names(case_with_control_expr)%in%row.names(DE1),]
+dataframe_for_computation=as.data.frame(t(case_with_control_expr)) 
 
-dataframe_for_computation=as.data.frame(t(hcc_with_liver)) #plug, will fix asap
+#this takes for a while
 small_res=compute_bsabs(antigene_1=colnames(dataframe_for_computation),data_input=dataframe_for_computation,pheno_input=phenotype_vector)
 head(small_res)
 
-p=plot_bsabs(small_res,label='case',pval_cut_off=0.01,pair_score_cut_off=quantile(small_res$pair_score,.99))
+result_table=small_res
+result_table=subset(result_table,pair_score>quantile(result_table$pair_score,.90))
+result_table=subset(result_table,pair_score>2)
+result_table=subset(result_table,case_greater=='TRUE_TRUE')
+result_table=result_table[order(result_table$pair_score,decreasing = T),]
+result_table$antigen_1=gsub('-','_',result_table$antigen_1)
+result_table$antigen_2=gsub('-','_',result_table$antigen_2)
+boxplot=table(c(result_table$antigen_1,result_table$antigen_2))/nrow(result_table)
+boxplot=boxplot[order(boxplot,decreasing = T)][1:30]
 
-backup_res=small_res
+
+pdf("BSAB_FIG2C.pdf", width = 10, height = 4)
+{
+  print(barplot(boxplot,las=2, main='Density of genes across bispecific pairs',cex.names=0.9,col=c('black','white'),ylim=c(0,0.5)))
+  
+}
+
+dev.off()
+
+
+# FIG 2D
+plot_bsabs(small_res,label='case',pval_cut_off=0.01,pair_score_cut_off=quantile(small_res$pair_score,.99)) 
 
 #subset result table to filter out only top pairs:
-small_res=subset(small_res,pair_score>quantile(small_res$pair_score,.99)&case_greater=='TRUE_TRUE'&p.adj<0.01)
+small_res=small_res[small_res$case_greater=="TRUE_TRUE",]
 
-#order and filter top-20
-small_res=small_res[order(small_res$pair_score,decreasing = T),][1:20,]
-marker_list=unique(c(small_res$antigen_1,small_res$antigen_2))
+#ordering as per pair score , highest score should be at top
+small_res=small_res[order(small_res$pair_score,decreasing = T),] 
+
+#Subsetting top 20 pairs
+small_res_selective=small_res[c(1:20),]
+
+# unique marker genes in top 20 pairs
+marker_list=unique(c(small_res_selective$antigen_1,small_res_selective$antigen_2))
+marker_list
+
+
+# PLOT FIG 2E with STATS
 
 healthy_tissues=subset(phenoDF,sample.type=='normal')  
-healthy_tissues=subset(healthy_tissues,grepl('BRAIN',biopsy.site)|biopsy.site=='LIVER'|biopsy.site=='LUNG'|grepl('HEART',biopsy.site)| grepl('KIDNEY',biopsy.site))
+healthy_tissues=subset(healthy_tissues,grepl('BRAIN',biopsy.site)|biopsy.site=='LUNG'|grepl('HEART',biopsy.site)| grepl('KIDNEY',biopsy.site))
 
 healthy_tissues <- healthy_tissues %>%mutate(biopsy.site = ifelse(grepl("BRAIN", biopsy.site), "BRAIN", biopsy.site))
 healthy_tissues <- healthy_tissues %>%mutate(biopsy.site = ifelse(grepl("HEART", biopsy.site), "HEART", biopsy.site))
 healthy_tissues <- healthy_tissues %>%mutate(biopsy.site = ifelse(grepl("KIDNEY", biopsy.site), "KIDNEY", biopsy.site))
 
+
 healthy_tissues_expr=loadOctadCounts(healthy_tissues$sample.id ,type='tpm',file='~/Downloads/octad.counts.and.tpm.h5') #Windows
 #healthy_tissues=loadOctadCounts(healthy_tissues$sample.id ,type='tpm',file='~/Dropbox/binchenlab/work/show/octad.counts.and.tpm.h5')#Unix
 healthy_tissues_expr=as.data.frame(healthy_tissues_expr)
 
-#annotate & select only genes from the result table
 healthy_tissues_expr=ensg_to_hgnc(healthy_tissues_expr,select_surface=FALSE)
 healthy_tissues_expr=healthy_tissues_expr[row.names(healthy_tissues_expr)%in%marker_list,]
 
@@ -134,73 +189,115 @@ healthy_tissues_expr=as.data.frame(t(healthy_tissues_expr))
 
 healthy_tissues_expr$Sample=healthy_tissues$biopsy.site[match(rownames(healthy_tissues_expr),healthy_tissues$sample.id)]
 
-hcc_with_liver=hcc_with_liver[row.names(hcc_with_liver)%in%marker_list,]
+case_with_control_expr2=case_with_control_expr[row.names(case_with_control_expr)%in%marker_list,]
 
-hcc=hcc_with_liver[,colnames(hcc_with_liver)%in%case_id]
+case_with_control_expr2=case_with_control_expr2[order(rownames(case_with_control_expr2)),]
 
-hcc=hcc[order(rownames(hcc)),]
+case_with_control_expr2=as.data.frame(t(case_with_control_expr2))
 
-hcc=as.data.frame(t(hcc))
+case_with_control_expr2$Sample=ifelse(rownames(case_with_control_expr2)%in%case_id,"HCC","LIVER")
 
-hcc$Sample="HCC"
+#table(case_with_control_expr2$Sample)
 
-colnames(hcc)==colnames(healthy_tissues_expr)
+colnames(case_with_control_expr2)==colnames(healthy_tissues_expr)
 
-marker_expr=rbind(hcc,healthy_tissues_expr)
+marker_expr=rbind(case_with_control_expr2,healthy_tissues_expr)
 
 table(marker_expr$Sample)
 
-sample_order <- c("HCC", "LIVER", "BRAIN", "HEART", "LUNG","KIDNEY")
+sample_order <- c("HCC","LIVER", "LUNG","KIDNEY", "BRAIN", "HEART")
+
 marker_expr$Sample <- factor(marker_expr$Sample, levels = sample_order)
 
-pdf("~/Downloads/BSAB_marker.pdf")
-{
-  for (i in 1:18) {
-    gg <- ggplot(marker_expr, aes(x = Sample, y = marker_expr[[i]], fill = Sample)) +
-      geom_boxplot() +
-      scale_fill_manual(values = c("red", "blue",rep("gray", length(sample_order) - 2))) +
-      labs(x = "Biopsy Site", y = names(marker_expr)[i], title = paste("Boxplot of", names(marker_expr)[i], "by Biopsy Site")) +
-      theme_minimal() +
-      guides(fill = FALSE)
-    
-    print(gg)
-      
-  }
-}
-
-dev.off()
-
-###############################################################
-
-#Validation purpose
-
-hcc_with_liver_2=ensg_to_hgnc(hcc_with_liver,select_surface=FALSE)
-
-exp=hcc_with_liver_2[rownames(hcc_with_liver_2)%in%c('GPC3','MUC13','CD3D','CD3E','CD3G','MSLN'),]
-
-exp=exp[order(rownames(exp)),]
-
-exp=as.data.frame(t(exp))
-
-exp$Sample=ifelse(rownames(exp)%in%Healthy$sample.id,"Normal_Liver","HCC")
-
-marker_list=colnames(exp)[1:6]
-
-pdf("~/Downloads/BSAB_HCC_validation.pdf")
+pdf("~/Desktop/BSAB_LIVER_marker.pdf", width = 10, height = 4)
 {
   for (i in 1:length(marker_list)) {
-    gg <- ggplot(exp, aes(x = Sample, y = exp[[i]], fill = Sample)) +
+    gg <- ggplot(marker_expr, aes(x = Sample, y = marker_expr[[i]], fill = Sample)) +
       geom_boxplot() +
-      scale_fill_manual(values = c("red", "blue",guide = "none")) +
-      labs(x = "Biopsy Site", y = names(expr)[i], title = paste("Marker expression by biopsy site: ", names(exp)[i])) +
+      scale_fill_manual(values = c("red", "blue",rep("gray", length(sample_order) - 2)),guide = "none") +
+      labs(x = "Biopsy Site", y = names(marker_expr)[i], title = paste("Marker expression by biopsy site: ", names(marker_expr)[i])) +
       theme(axis.text.x = element_text(angle=45, hjust=1)) +
       #guides(fill = none)+
-      stat_compare_means(method = "t.test",label="p.signif") #ref.group = "HCC"
-     
-    print(gg)
+      stat_compare_means(method = "t.test", ref.group = "HCC", label="p.signif")
+        
+        
+     print(gg)
     
   }
 }
 
 dev.off()
+
+# Marker Frequency plot 
+
+markers <- c(small_res_selective$antigen_1,small_res_selective$antigen_2)
+
+# Count the occurrences of each antigen in the combined vector
+marker_counts <- table(markers)
+
+# Convert the result to a data frame
+marker_counts_df <- as.data.frame(marker_counts)
+names(marker_counts_df) <- c("Marker", "Frequency")
+
+marker_counts_df <- marker_counts_df[order(-marker_counts_df$Frequency), ]
+
+marker_counts_df$Marker <- factor(marker_counts_df$Marker, levels = marker_counts_df$Marker)
+
+proxy_var <- as.numeric(marker_counts_df$Frequency)
+
+pdf("~/Desktop/BSAB_HCC_marker_frequency.pdf",width = 10, height = 4)
+
+{
+  gg_freq<-ggplot(marker_counts_df, aes(x= Marker, y=Frequency, fill=proxy_var)) +
+    geom_bar(stat="identity")+
+    scale_y_continuous(breaks = seq(0, max(marker_counts_df$Frequency)+2, by = 2), limits = c(0, max(marker_counts_df$Frequency)))+
+    theme(axis.text.x = element_text(angle=45, hjust=1))+
+    labs(x = "Marker", y = "Frequency", title = "Marker Frequency among top 20 BSAB pairs")+
+    scale_fill_gradient(low = "black",high = "black", guide = "none") 
+
+  print(gg_freq)
+}
+
+dev.off()
+
+##############################################################################################
+
+marker_expr$Category=NA
+
+unique(marker_expr$Sample)
+
+marker_expr$Category[marker_expr$Sample=="HCC"]="Case_HCC"
+marker_expr$Category[marker_expr$Sample=="LIVER"]="Control_Liver_Normal"
+marker_expr$Category[marker_expr$Sample%in%c("HEART","BRAIN", "LUNG","KIDNEY")]="Healthy_Normal"
+
+
+pdf("~/Desktop/BSAB_HCC_marker_pair.pdf") # PLOT FIG 2A and 2B
+
+{
+
+markerpair1=ggplot(marker_expr, aes(x = PLVAP, y = GPC3 , color = Category)) +
+  geom_point() +
+  labs(x = "PLVAP", y = "GPC3", title = "Scatter Plot with Categorical Color") +
+  scale_color_manual(values = c("Case_HCC" = "red", "Control_Liver_Normal" = "blue", "Healthy_Normal" = "gray")) +
+  theme_minimal()
+
+markerpair2=ggplot(marker_expr, aes(x = GPC3, y = MUC13 , color = Category)) +
+    geom_point() +
+    labs(x = "GPC3", y = "MUC13", title = "Scatter Plot with Categorical Color") +
+    scale_color_manual(values = c("Case_HCC" = "red", "Control_Liver_Normal" = "blue", "Healthy_Normal" = "gray")) +
+    #scale_shape_manual(values = c(1, 2,4), guide = "none") + 
+    theme_minimal() 
+  
+
+print(markerpair1)
+print(markerpair2)
+
+}
+
+dev.off()
+
+save(list=c('case_expr','control_expr','case_with_control_expr','case_with_control_expr2','DE','DE1','healthy_tissues_expr','small_res','small_res_selective','marker_expr','healthy_tissues','marker_counts'),file="BSAB_HCC.RData")
+
+
 ```
+Plese check Sample_Code folder which includes similar analysis for Prostate Cancer. The R Markdown pdf includes sample plots. 
