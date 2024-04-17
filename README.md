@@ -6,8 +6,8 @@ Please refer Sample Code Folder for the code.
 
 ## **Requirements**
 You need to download following from data folder:
-- basabsfinder_0.0.0.9001.tar.gz 
-- octad.counts.and.tpm.h5 https://chenlab-data-public.s3.amazonaws.com/octad/octad.counts.and.tpm.h5
+- [basabsfinder_0.0.0.9001.tar.gz](https://chenlab-data-public.s3.amazonaws.com/BISPECIFIC_ANTIBODY/bsAbsFinder_installation/basabsfinder_0.0.0.9001.tar.gz)
+- [octad.counts.and.tpm.h5](https://chenlab-data-public.s3.amazonaws.com/octad/octad.counts.and.tpm.h5)
 
 ## **Installation**
 
@@ -92,6 +92,12 @@ download_seurat_object(object_name = "HCC_GSE151530",save_dir = getwd())
   # plots will be stored "Coexpress_GPC3_MUC13.pdf"
 
 ```
+
+## **Manuscript Single Cell Figures Data and Code**
+- [FIG4](https://chenlab-data-public.s3.amazonaws.com/BISPECIFIC_ANTIBODY/Single_Cell_data/FIG4_VITAL_ORGANS.zip)
+- [FIG5](https://chenlab-data-public.s3.amazonaws.com/BISPECIFIC_ANTIBODY/Single_Cell_data/FIG5_HCC.zip)
+- [FIG6](https://chenlab-data-public.s3.amazonaws.com/BISPECIFIC_ANTIBODY/Single_Cell_data/FIG6_COEXPRESSION_PLOT.zip)
+
   
 
   
