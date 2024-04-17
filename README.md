@@ -5,9 +5,9 @@ The R package `bsAbsFinder` enlists the bispecific antibody marker pairs based o
 Please refer Sample Code Folder for the code.
 
 ## **Requirements**
-You need to download following from data folder:
-- basabsfinder_0.0.0.9001.tar.gz 
-- octad.counts.and.tpm.h5 https://chenlab-data-public.s3.amazonaws.com/octad/octad.counts.and.tpm.h5
+You need to download following files:
+- [basabsfinder_0.0.0.9001.tar.gz](https://chenlab-data-public.s3.amazonaws.com/BISPECIFIC_ANTIBODY/bsAbsFinder_installation)
+- [octad.counts.and.tpm.h5]( https://chenlab-data-public.s3.amazonaws.com/octad/octad.counts.and.tpm.h5)
 
 ## **Installation**
 
