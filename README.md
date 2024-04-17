@@ -92,6 +92,12 @@ download_seurat_object(object_name = "HCC_GSE151530",save_dir = getwd())
   # plots will be stored "Coexpress_GPC3_MUC13.pdf"
 
 ```
+
+## **Manuscript Single Cell Figures Data and Code**
+- [FIG4](https://chenlab-data-public.s3.amazonaws.com/BISPECIFIC_ANTIBODY/Single_Cell_data/FIG4_VITAL_ORGANS.zip)
+- [FIG5](https://chenlab-data-public.s3.amazonaws.com/BISPECIFIC_ANTIBODY/Single_Cell_data/FIG5_HCC.zip)
+- [FIG6](https://chenlab-data-public.s3.amazonaws.com/BISPECIFIC_ANTIBODY/Single_Cell_data/FIG6_COEXPRESSION_PLOT.zip)
+
   
 
   
