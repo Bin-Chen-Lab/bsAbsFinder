@@ -6,8 +6,8 @@ Please refer Sample Code Folder for the code.
 
 ## **Requirements**
 You need to download following from data folder:
-- basabsfinder_0.0.0.9001.tar.gz 
-- octad.counts.and.tpm.h5 https://chenlab-data-public.s3.amazonaws.com/octad/octad.counts.and.tpm.h5
+- (basabsfinder_0.0.0.9001.tar.gz)[https://chenlab-data-public.s3.amazonaws.com/bsAbsFinder_installation/basabsfinder_0.0.0.9001.tar.gz]
+- (octad.counts.and.tpm.h5)[https://chenlab-data-public.s3.amazonaws.com/octad/octad.counts.and.tpm.h5]
 
 ## **Installation**
 
