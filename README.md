@@ -2,7 +2,7 @@
 
 The R package `bsAbsFinder` enlists the bispecific antibody marker pairs based on OCTAD bulk RNA sequencing data. 
 
-Please refer Sample Code Folder for the code.
+Please refer Example_Code Folder for the code.
 
 ## **Requirements**
 You need to download following from data folder:
