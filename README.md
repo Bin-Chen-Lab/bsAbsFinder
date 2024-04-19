@@ -86,7 +86,7 @@ download_seurat_object(object_name = "HCC_GSE151530",save_dir = getwd())
   
   sc_bispecific_expression(so = HCC_GSE151530 ,ident = "Celltype_Malignancy",geneA = "GPC3",geneB="MUC13")
   
-  # For a given pair this function calculates the percetage of cells expressing gene A , gene B or both.
+  # For a given pair this function calculates the percentage of cells expressing gene A , gene B or both.
   # It also plots the Featureplot and Dotplot for given pair.
   # Percentage table for above call will be stored as "Coexpress_HCC_GSE151530_GPC3_MUC13.csv" and 
   # plots will be stored "Coexpress_GPC3_MUC13.pdf"
