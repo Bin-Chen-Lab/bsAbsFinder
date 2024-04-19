@@ -20,7 +20,7 @@ install_github("Bin-Chen-Lab/octad.db")
 install_github("Bin-Chen-Lab/octad")
 
 install.packages("~/Downloads/basabsfinder_0.0.0.9001.tar.gz", repos=NULL, type='source')
-devtools::install_github('Lionir/bsAbsFinder')
+devtools::install_github('shreya1704/bsAbsFinder')
 
 install.packages(c('cluster','dplyr','ggplot2','ggpubr'))
 ```
