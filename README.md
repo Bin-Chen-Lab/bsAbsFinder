@@ -84,7 +84,7 @@ download_seurat_object(object_name = "HCC_GSE151530",save_dir = getwd())
 
 # To visualize the expression pattern and calculate the percentage of cells expressing given pair 
   
-  sc_bispecific_expression(so = HCC_GSE151530 ,ident = "Celltype_Malignancy",geneA = "GPC3",geneB="MUC13")
+  sc_bispecific_expression(so = HCC_GSE151530 ,ident = "Celltype_MajorLineage",geneA = "GPC3",geneB="MUC13")
   
   # For a given pair this function calculates the percentage of cells expressing gene A , gene B or both.
   # It also plots the Featureplot and Dotplot for given pair.
