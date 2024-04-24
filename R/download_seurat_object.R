@@ -5,7 +5,8 @@
 #' @param object_name A character string specifying the Seurat object name.
 #' @param csv_path A character string specifying the path to the CSV file containing Seurat object information.
 #' @param save_dir A character string specifying the directory to save the downloaded Seurat object.
-#' @importFrom utils tryCatch
+#
+
 #' @export
 
 download_seurat_object <- function(object_name, csv_path = BSABS_SINGLE_CELL_DATA.csv, save_dir = getwd()) {

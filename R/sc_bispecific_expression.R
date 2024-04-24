@@ -1,11 +1,8 @@
-#source("scbsabs_coexpress.R")
-#source("scbsabs_plot.R")
-#' @export
+#' @import ggplot2
+#' @import dplyr
+#' @import Seurat
+#' @import rlang
 
-library(ggplot2)
-library(dplyr)
-library(Seurat)
-library(rlang)
 
 plot_seurat_data <- function(so, ident, geneA, geneB,geneA_present,geneB_present) {
   # Subset Seurat object to remove cells with NA in the identity column
@@ -151,6 +148,7 @@ coexpression_calculation<- function(binary_df, geneA, geneB)
   return(result_df)
 }
 
+#' @export
 sc_bispecific_expression <- function(so, ident, geneA, geneB) {
 
 # Step 1: Check gene presence
