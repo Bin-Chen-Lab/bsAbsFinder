@@ -2,7 +2,7 @@
 
 The R package `bsAbsFinder` enlists the bispecific antibody marker pairs based on OCTAD bulk RNA sequencing data. 
 
-Please refer Sample Code Folder for the code.
+Please refer Example_Code Folder for the code.
 
 ## **Requirements**
 You need to download following from data folder:
@@ -84,9 +84,9 @@ download_seurat_object(object_name = "HCC_GSE151530",save_dir = getwd())
 
 # To visualize the expression pattern and calculate the percentage of cells expressing given pair 
   
-  sc_bispecific_expression(so = HCC_GSE151530 ,ident = "Celltype_Malignancy",geneA = "GPC3",geneB="MUC13")
+  sc_bispecific_expression(so = HCC_GSE151530 ,ident = "Celltype_MajorLineage",geneA = "GPC3",geneB="MUC13")
   
-  # For a given pair this function calculates the percetage of cells expressing gene A , gene B or both.
+  # For a given pair this function calculates the percentage of cells expressing gene A , gene B or both.
   # It also plots the Featureplot and Dotplot for given pair.
   # Percentage table for above call will be stored as "Coexpress_HCC_GSE151530_GPC3_MUC13.csv" and 
   # plots will be stored "Coexpress_GPC3_MUC13.pdf"
@@ -94,9 +94,9 @@ download_seurat_object(object_name = "HCC_GSE151530",save_dir = getwd())
 ```
 
 ## **Manuscript Single Cell Figures Data and Code**
-- [FIG4](https://chenlab-data-public.s3.amazonaws.com/BISPECIFIC_ANTIBODY/Single_Cell_data/FIG4_VITAL_ORGANS.zip)
-- [FIG5](https://chenlab-data-public.s3.amazonaws.com/BISPECIFIC_ANTIBODY/Single_Cell_data/FIG5_HCC.zip)
-- [FIG6](https://chenlab-data-public.s3.amazonaws.com/BISPECIFIC_ANTIBODY/Single_Cell_data/FIG6_COEXPRESSION_PLOT.zip)
+- [FIG4](https://chenlab-data-public.s3.us-west-2.amazonaws.com/BISPECIFIC_ANTIBODY/Single_cell_data/FIG4_VITAL_ORGANS.zip)
+- [FIG5](https://chenlab-data-public.s3.us-west-2.amazonaws.com/BISPECIFIC_ANTIBODY/Single_cell_data/FIG5_HCC.zip)
+- [FIG6](https://chenlab-data-public.s3.us-west-2.amazonaws.com/BISPECIFIC_ANTIBODY/Single_cell_data/FIG6AB_COEXPRESSION_PLOT.zip)
 
   
 
