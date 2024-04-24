@@ -94,9 +94,9 @@ download_seurat_object(object_name = "HCC_GSE151530",save_dir = getwd())
 ```
 
 ## **Manuscript Single Cell Figures Data and Code**
-- [FIG4](https://chenlab-data-public.s3.amazonaws.com/BISPECIFIC_ANTIBODY/Single_Cell_data/FIG4_VITAL_ORGANS.zip)
-- [FIG5](https://chenlab-data-public.s3.amazonaws.com/BISPECIFIC_ANTIBODY/Single_Cell_data/FIG5_HCC.zip)
-- [FIG6](https://chenlab-data-public.s3.amazonaws.com/BISPECIFIC_ANTIBODY/Single_Cell_data/FIG6_COEXPRESSION_PLOT.zip)
+- [FIG4](https://chenlab-data-public.s3.us-west-2.amazonaws.com/BISPECIFIC_ANTIBODY/Single_cell_data/FIG4_VITAL_ORGANS.zip)
+- [FIG5](https://chenlab-data-public.s3.us-west-2.amazonaws.com/BISPECIFIC_ANTIBODY/Single_cell_data/FIG5_HCC.zip)
+- [FIG6](https://chenlab-data-public.s3.us-west-2.amazonaws.com/BISPECIFIC_ANTIBODY/Single_cell_data/FIG6AB_COEXPRESSION_PLOT.zip)
 
   
 
