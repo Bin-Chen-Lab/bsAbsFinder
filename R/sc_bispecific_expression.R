@@ -1,5 +1,6 @@
 #source("scbsabs_coexpress.R")
 #source("scbsabs_plot.R")
+#' @export
 
 library(ggplot2)
 library(dplyr)
