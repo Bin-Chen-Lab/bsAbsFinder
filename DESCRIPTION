@@ -16,3 +16,14 @@ Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.3.1
 Depends: 
     R (>= 2.10)
+Imports:
+  cluster,
+  dplyr,
+  ggplot2,
+  ggpubr,
+  Seurat,
+  DESeq2,
+  edgeR,
+  EDASeq,
+  RUVSeq,
+  EnsDb.Hsapiens.v86

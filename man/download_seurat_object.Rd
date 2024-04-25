@@ -4,18 +4,14 @@
 \alias{download_seurat_object}
 \title{Download Seurat object based on object name}
 \usage{
-download_seurat_object(
-  object_name,
-  csv_path = BSABS_SINGLE_CELL_DATA.csv,
-  save_dir = getwd()
-)
+download_seurat_object(object_name, save_dir = getwd())
 }
 \arguments{
 \item{object_name}{A character string specifying the Seurat object name.}
 
-\item{csv_path}{A character string specifying the path to the CSV file containing Seurat object information.}
-
 \item{save_dir}{A character string specifying the directory to save the downloaded Seurat object.}
+
+\item{csv_path}{A character string specifying the path to the CSV file containing Seurat object information.}
 }
 \description{
 This function downloads the Seurat object corresponding to the given object name.

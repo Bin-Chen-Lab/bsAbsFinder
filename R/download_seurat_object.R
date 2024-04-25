@@ -9,7 +9,7 @@
 
 #' @export
 
-download_seurat_object <- function(object_name, csv_path = BSABS_SINGLE_CELL_DATA.csv, save_dir = getwd()) {
+download_seurat_object <- function(object_name, save_dir = getwd()) {
   #cat("Function started with object name:", object_name, "\n")
 
   # Check if the object already exists in the environment
@@ -32,7 +32,7 @@ download_seurat_object <- function(object_name, csv_path = BSABS_SINGLE_CELL_DAT
   }
 
   # Read the CSV file containing Seurat object information
-  seurat_data <- read.csv(csv_path)
+  seurat_data <- BSABS_SINGLE_CELL_DATA
 
   # Check if the specified object name exists in the data
   if (object_name %in% seurat_data$SEURAT_OBJECT) {

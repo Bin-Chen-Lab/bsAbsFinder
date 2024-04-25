@@ -128,7 +128,7 @@ coexpression_calculation<- function(binary_df, geneA, geneB)
     stringsAsFactors = FALSE
   )
 
-  for (ctype in unique(binary_df$Ident)) {
+  for (ctype in unique(binary_df)) {
 
     subset=binary_df[binary_df$Ident==ctype,]
     res=calculate_percentages2(subset, geneA, geneB)
@@ -187,13 +187,15 @@ if (!exists(variable_name, envir = .GlobalEnv)){
 bool_df=get(variable_name)
 Ident_col <- as.data.frame(so@meta.data[, ident, drop = FALSE])
 Ident_col <- Ident_col[order(rownames(Ident_col)), , drop = FALSE]
+Ident_col[,1]=factor(Ident_col[,1])
 bool_df <- cbind(bool_df, Ident_col)
-colnames(bool_df)[ncol(bool_df)] <- "Ident"
+colnames(bool_df)[which(colnames(bool_df)==ident)] <- "Ident"
 bool_df <- bool_df[!is.na(bool_df$Ident), ]
-
+#return(bool_df)
 message("Calculating percentage of cells expressing given gene(s).....")
 
 result_df <- coexpression_calculation(bool_df, geneA, geneB)
+colnames(result_df)=c(ident,paste0("percent", "_", geneA), paste0("percent", "_", geneB), paste0("percent", "_", geneA, "_", geneB))
 output_name <- paste0("Coexpress_", so_name, "_", geneA, "_", geneB)
 write.csv(result_df,paste0(output_name,".csv"),row.names = F,quote=F)
 
