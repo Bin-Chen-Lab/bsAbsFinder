@@ -1,19 +1,20 @@
+#' @export
 #' @import edgeR
 #' @import bsabsfinder
 #' @import cluster
 #' @import dplyr
 #' @import ggplot2
 #' @import ggpubr
-#' @export
+
 
 
 
 bulk_DE_surface_antigen=function(cancer.type, normal.tissue, octad_counts_data_path){
 
-  case=subset(phenoDF,cancer==cancer.type & sample.type == 'primary')
-  case_id=case$sample.id #select cases
-  control=subset(phenoDF, biopsy.site== normal.tissue & sample.type=='normal')
-  control_id=control$sample.id
+case=subset(phenoDF,cancer==cancer.type & sample.type == 'primary')
+case_id=case$sample.id #select cases
+control=subset(phenoDF, biopsy.site== normal.tissue & sample.type=='normal')
+control_id=control$sample.id
 case_expr=loadOctadCounts(case_id,type='tpm',file=octad_counts_data_path)
 case_expr=as.data.frame(case_expr)
 control_expr=loadOctadCounts(control_id ,type='tpm',file=octad_counts_data_path)
