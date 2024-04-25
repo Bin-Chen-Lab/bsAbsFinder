@@ -12,17 +12,13 @@ You need to download following from data folder:
 ## **Installation**
 
 ```r
-install.packages('BiocManager')
-BiocManager::install(c("DESeq2","edgeR","EDASeq","RUVSeq","EnsDb.Hsapiens.v86"))
 
 library(devtools)
 install_github("Bin-Chen-Lab/octad.db")
 install_github("Bin-Chen-Lab/octad")
 
-install.packages("~/Downloads/basabsfinder_0.0.0.9001.tar.gz", repos=NULL, type='source')
 devtools::install_github('shreya1704/bsAbsFinder')
 
-install.packages(c('cluster','dplyr','ggplot2','ggpubr'))
 ```
 ## **Input**
 
