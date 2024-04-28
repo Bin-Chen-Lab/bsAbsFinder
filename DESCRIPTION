@@ -1,13 +1,23 @@
 Package: bsabsfinder
-Title: What the Package Does (One Line, Title Case)
+Title: Identification of bispecific antibody targets for cancers
 Version: 0.0.0.9001
 Authors@R: 
-    person(given = "First",
-           family = "Last",
+    person(given = "Evagenii",
+           family = "Chekalin",
            role = c("aut", "cre"),
-           email = "first.last@example.com",
-           comment = c(ORCID = "YOUR-ORCID-ID"))
-Description: What the package does (one paragraph).
+           )
+    person(given = "Shreya",
+           family = "Paithankar",
+           role = c("aut", "cre"),
+           email = "paithank@msu.edu"
+           )
+    person(given = "Rama",
+           family = "Shankar",
+           role = c("aut", "cre"),
+           email = "ramashan@msu.edu"
+           )
+Description: This package enlists bispecific antibody targets for given cancer based on bulkRNA data.
+             The Identified pairs can further validated based on scRNA data.  
 License: `use_mit_license()`, `use_gpl3_license()` or friends to pick a
     license
 Encoding: UTF-8
@@ -15,7 +25,7 @@ LazyData: true
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.3.1
 Depends: 
-    R (>= 2.10)
+   R (>= 3.5.0)
 Imports:
   cluster,
   dplyr,
