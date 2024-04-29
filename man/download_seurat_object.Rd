@@ -4,15 +4,18 @@
 \alias{download_seurat_object}
 \title{Download Seurat object based on object name}
 \usage{
-download_seurat_object(object_name, save_dir = getwd())
+download_seurat_object(object_name = "HCC_GSE151530",save_dir = getwd())
 }
 \arguments{
-\item{object_name}{A character string specifying the Seurat object name.}
+\item{object_name}{A character string specifying the Seurat object name. Case-sensitive. Just use as given in 'SEURAT_OBJECT' of show_singlecell_data().}
 
-\item{save_dir}{A character string specifying the directory to save the downloaded Seurat object.}
-
-\item{csv_path}{A character string specifying the path to the CSV file containing Seurat object information.}
+\item{save_dir}{By default it will be saved in working directory.}
+}
+\value{
+Seurat object will be downloaded in working directory and also loaded in environment.
 }
 \description{
-This function downloads the Seurat object corresponding to the given object name.
+Before running this function,please run.\cr
+SeuratData=bsabsfinder::show_singlecell_data()\cr\cr
+This function downloads the Seurat object corresponding to the given SEURAT_OBJECT from show_singlecell_data().
 }

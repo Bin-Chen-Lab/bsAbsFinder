@@ -1,3 +1,26 @@
+#' @title bulk_DE_surface_antigen
+#'
+#' @description
+#' This function enlists the bispecific antibody target pairs for given cancer.
+#' The Pairtable.csv and related plots will be saved as pdf in working directory.
+#'
+#' @param cancer.type A character string specifying the cancer name.It should be selected from total_cancer_count. Case-sensitive.
+#' @param normal.tissue A character string specifying the corresponding normal tissue for the cancer.It should be selected from normal.tissue.Case-sensitive.
+#' @param octad_counts_data_path path for octad.counts.and.tpm.h5
+#' @param output_file_name A character string specifying the desired outfile file name
+#'
+#' @return dataframe with maximum 30 bispecific antibody target pairs
+#' @return Barplot pdf showing frequency of top markers
+#' @return Boxplot pdf showing expression pattern of top markers across cancer, normal tissue and normal vital organs
+#' @return Volcanoplot pdf for each pair
+#'
+#' @usage
+#' bulk_DE_surface_antigen(
+#' cancer.type = 'liver hepatocellular carcinoma',
+#' normal.tissue = 'LIVER',
+#' octad_counts_data_path = "~/Downloads/octad.counts.and.tpm.h5",
+#' output_file_name = "liver_output"
+#' )
 #' @export
 #' @import edgeR
 #' @import bsabsfinder
@@ -5,8 +28,6 @@
 #' @import dplyr
 #' @import ggplot2
 #' @import ggpubr
-
-
 
 bulk_DE_surface_antigen=function(cancer.type, normal.tissue, octad_counts_data_path,output_file_name){
 

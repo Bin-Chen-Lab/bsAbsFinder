@@ -1,16 +1,21 @@
 #' Download Seurat object based on object name
 #'
-#' This function downloads the Seurat object corresponding to the given object name.
+#' @description
+#' Before running this function,please run.\cr
+#' SeuratData=bsabsfinder::show_singlecell_data()\cr\cr
+#' This function downloads the Seurat object corresponding to the given SEURAT_OBJECT from show_singlecell_data().
 #'
-#' @param object_name A character string specifying the Seurat object name.
-#' @param csv_path A character string specifying the path to the CSV file containing Seurat object information.
-#' @param save_dir A character string specifying the directory to save the downloaded Seurat object.
+#' @param object_name A character string specifying the Seurat object name. Case-sensitive. Just use as given in 'SEURAT_OBJECT' of show_singlecell_data().
+#' @param save_dir By default it will be saved in working directory.
 #
-
+#' @return Seurat object will be downloaded in working directory and also loaded in environment.
+#' @usage
+#'
+#' download_seurat_object(object_name = "HCC_GSE151530",save_dir = getwd())
+#'
+#'
 #' @export
-
 download_seurat_object <- function(object_name, save_dir = getwd()) {
-  #cat("Function started with object name:", object_name, "\n")
 
   # Check if the object already exists in the environment
   if (exists(object_name, inherits = FALSE) && class(get(object_name)) == "Seurat") {
@@ -64,4 +69,4 @@ download_seurat_object <- function(object_name, save_dir = getwd()) {
   }
 }
 
-#download_seurat_object("CESC_GSE168652", save_dir = "/mnt/ufs18/rs-013/chenlab/Bispecific/")
+
