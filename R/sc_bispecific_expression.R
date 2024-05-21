@@ -3,7 +3,6 @@
 #' @import Seurat
 #' @import rlang
 
-
 plot_seurat_data <- function(so, ident, geneA, geneB,geneA_present,geneB_present) {
   # Subset Seurat object to remove cells with NA in the identity column
   if (ident %in% colnames(so@meta.data)) {
@@ -147,7 +146,25 @@ coexpression_calculation<- function(binary_df, geneA, geneB)
 
   return(result_df)
 }
-
+#' @title sc_bispecific_expression
+#'
+#' @description
+#' This function calculates the % of cells expressing given markers in seurat obect.
+#'
+#'
+#' @param so It should be loaded SuratObject in enviornment
+#' @param ident Identity column of the seurat obect
+#' @param geneA character string specifying first marker of a pair
+#' @param geneB character string specifying second marker of a pair
+#'
+#' @return dataframe showing the percentage of cell expressing marker A , marker B and both marker A and marker B
+#' @return PDF containing diplot of seuratobject, featureplot showing marker A and marker B and dotplot showing expression of marker A and marker B
+#'
+#' @usage
+#'
+#'  sc_bispecific_expression(so = HCC_GSE151530 ,ident = "Celltype_MajorLineage",geneA = "GPC3",geneB="MUC13")
+#'
+#'
 #' @export
 sc_bispecific_expression <- function(so, ident, geneA, geneB) {
 

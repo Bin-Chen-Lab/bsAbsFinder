@@ -2,11 +2,9 @@
 
 The R package `bsAbsFinder` enlists the bispecific antibody marker pairs based on OCTAD bulk RNA sequencing data. 
 
-Please refer Example_Code Folder for the code.
-
 ## **Requirements**
 You need to download following from data folder:
-- [basabsfinder_0.0.0.9001.tar.gz](https://chenlab-data-public.s3.amazonaws.com/BISPECIFIC_ANTIBODY/bsAbsFinder_installation/basabsfinder_0.0.0.9001.tar.gz)
+
 - [octad.counts.and.tpm.h5](https://chenlab-data-public.s3.amazonaws.com/octad/octad.counts.and.tpm.h5)
 
 ## **Installation**
@@ -18,32 +16,34 @@ install_github("Bin-Chen-Lab/octad.db")
 install_github("Bin-Chen-Lab/octad")
 
 devtools::install_github('shreya1704/bsAbsFinder')
+library(bsabsfinder)
 
 ```
 ## **Input**
 
 To use the package, provide the name of a particular cancer (case) and its normal tissue (control).
 
-```r
-case=subset(phenoDF,cancer=='liver hepatocellular carcinoma'&sample.type == 'primary') 
-case_id=case$sample.id #select cases
-control=subset(phenoDF,sample.type=='normal'&biopsy.site=='LIVER')
-control_id=control$sample.id
-```
-Just replace the 'liver hepatocellular carcinoma' and 'LIVER' in above code with 
-other cancer and its corresponding healthy tissue. 
 Following code snippet displays the number of samples for various cancers and normal tissues. Select from that list.
+```r
+total_cancer_count=bsabsfinder::total_cancer_count
+total_normal_count=bsabsfinder::total_normal_count
+```
+Just replace the 'liver hepatocellular carcinoma' and 'LIVER' in below code with other cancer and its corresponding healthy tissue.<br><br>
+The input is case sensitive so please add it accordingly:<br>
+cancer.type as shown in total_cancer_count and 
+normal.tissue as shown in total_normal_count.<br><br>
+Also, specify the location of octad.counts.and.tpm.h5 and output file name.
 
 ```r
-total_cancer_count=as.data.frame(table(phenoDF$cancer))
-total_cancer_count=total_cancer_count[total_cancer_count$Var1!="normal",]
-total_cancer_count=total_cancer_count[order(total_cancer_count$Freq,decreasing = T),]
-
-total_normal=phenoDF[phenoDF$sample.type=="normal",c(1:3)]
-total_normal_count=as.data.frame(table(total_normal$biopsy.site))
-total_normal_count=total_normal_count[order(total_normal_count$Var1),]
+bulk_DE_surface_antigen(
+    cancer.type = 'liver hepatocellular carcinoma',
+    normal.tissue = 'LIVER',
+    octad_counts_data_path = "~/Downloads/octad.counts.and.tpm.h5",
+    output_file_name = "liver_output"
+)
 ```
-The code then extracts the expression matrix for those samples, performs DE analysis, and identifies marker pairs.
+
+The function then extracts the expression matrix for those samples, performs DE analysis, and identifies marker pairs.
 
 ## **Output**
 
@@ -63,6 +63,8 @@ Total 4 plots are generated (Manuscript Fig 2):
 - Marker frequency among top pairs
 - Expression pattern of top markers in case, control, and healthy vital organs
 - Expression pattern of top pair in case, control, and healthy vital organs
+
+Please refer Example_Code Folder for all figures.
 
 ## **scBSABS** : Single Cell Data for Validation of identified marker pair genes
 We have provided some single cell datasets to visulaize the expression patterns of identified marker genes. 
@@ -89,7 +91,7 @@ download_seurat_object(object_name = "HCC_GSE151530",save_dir = getwd())
 
 ```
 
-## **Manuscript Single Cell Figures Data and Code**
+## **Manuscript Single Cell Figures : Data and Code**
 - [FIG4](https://chenlab-data-public.s3.us-west-2.amazonaws.com/BISPECIFIC_ANTIBODY/Single_cell_data/FIG4_VITAL_ORGANS.zip)
 - [FIG5](https://chenlab-data-public.s3.us-west-2.amazonaws.com/BISPECIFIC_ANTIBODY/Single_cell_data/FIG5_HCC.zip)
 - [FIG6](https://chenlab-data-public.s3.us-west-2.amazonaws.com/BISPECIFIC_ANTIBODY/Single_cell_data/FIG6AB_COEXPRESSION_PLOT.zip)

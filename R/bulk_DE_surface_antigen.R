@@ -1,19 +1,64 @@
+#' @title bulk_DE_surface_antigen
+#'
+#' @description
+#' This function enlists the bispecific antibody target pairs for given cancer.
+#' The Pairtable.csv and related plots will be saved as pdf in working directory.
+#'
+#' @param cancer.type A character string specifying the cancer name.It should be selected from total_cancer_count. Case-sensitive.
+#' @param normal.tissue A character string specifying the corresponding normal tissue for the cancer.It should be selected from normal.tissue.Case-sensitive.
+#' @param octad_counts_data_path path for octad.counts.and.tpm.h5
+#' @param output_file_name A character string specifying the desired outfile file name
+#'
+#' @return dataframe with maximum 30 bispecific antibody target pairs
+#' @return Barplot pdf showing frequency of top markers
+#' @return Boxplot pdf showing expression pattern of top markers across cancer, normal tissue and normal vital organs
+#' @return Volcanoplot pdf for each pair
+#'
+#' @usage
+#' bulk_DE_surface_antigen(
+#' cancer.type = 'liver hepatocellular carcinoma',
+#' normal.tissue = 'LIVER',
+#' octad_counts_data_path = "~/Downloads/octad.counts.and.tpm.h5",
+#' output_file_name = "liver_output"
+#' )
+#' @export
 #' @import edgeR
 #' @import bsabsfinder
 #' @import cluster
 #' @import dplyr
 #' @import ggplot2
 #' @import ggpubr
-#' @export
 
+bulk_DE_surface_antigen=function(cancer.type, normal.tissue, octad_counts_data_path,output_file_name){
 
+case=subset(phenoDF,cancer==cancer.type & sample.type == 'primary')
+case_id=case$sample.id #select cases
 
-bulk_DE_surface_antigen=function(cancer.type, normal.tissue, octad_counts_data_path){
+control <- data.frame()
 
-  case=subset(phenoDF,cancer==cancer.type & sample.type == 'primary')
-  case_id=case$sample.id #select cases
-  control=subset(phenoDF, biopsy.site== normal.tissue & sample.type=='normal')
-  control_id=control$sample.id
+# Loop through each tissue type in normal.tissue and subset phenoDF
+if (length(normal.tissue) == 1) {
+  control = subset(phenoDF, biopsy.site == normal.tissue & sample.type == 'normal')
+} else if (length(normal.tissue) > 1) {
+  for (tissue in normal.tissue) {
+  subset_df <- subset(phenoDF, biopsy.site == tissue & sample.type == 'normal')
+  control <- rbind(control, subset_df) # Combine subsets
+  }
+  # control_list <- lapply(normal.tissue, function(tissue) {
+  #   subset(phenoDF, biopsy.site == tissue & sample.type == 'normal')
+  # })
+  # # Combine subsets into a single data frame
+  # control <- do.call(rbind, control_list)
+  #control = subset(phenoDF, biopsy.site %in% normal.tissue & sample.type == 'normal')
+}else {
+  stop("normal.tissue must be either a single tissue type or a multiple of tissue.")
+}
+
+control_id = control$sample.id
+#control=subset(phenoDF, biopsy.site== normal.tissue & sample.type=='normal')
+#control_id=control$sample.id
+#
+
 case_expr=loadOctadCounts(case_id,type='tpm',file=octad_counts_data_path)
 case_expr=as.data.frame(case_expr)
 control_expr=loadOctadCounts(control_id ,type='tpm',file=octad_counts_data_path)
@@ -56,8 +101,8 @@ dataframe_for_computation=as.data.frame(t(case_with_control_expr))
 #assign(dataframe_for_computation, as.data.frame(t(case_with_control_expr)), envir = .GlobalEnv)
 #this takes for a while
 small_res=compute_bsabs(antigene_1=colnames(dataframe_for_computation),data_input=dataframe_for_computation,pheno_input=phenotype_vector)
-assign("Antigen_pair_table", small_res,  envir = .GlobalEnv)
-write.csv(small_res, "Antigen_pairs_calculation.csv")
+#assign("Antigen_pair_table", small_res,  envir = .GlobalEnv)
+#write.csv(small_res, "Antigen_pairs_calculation.csv")
 
 
 result_table=small_res
@@ -71,12 +116,110 @@ boxplot=table(c(result_table$antigen_1,result_table$antigen_2))/nrow(result_tabl
 boxplot=boxplot[order(boxplot,decreasing = T)][1:30]
 
 
-pdf("BSAB_antigen_output.pdf", width = 10, height = 4)
+#output_file_name
+plot_name1=paste0(output_file_name, "_BSAB_allpairs_overview.pdf")
+plot_name2=paste0(output_file_name, "_BSAB_marker_density.pdf")
+plot_name3=paste0(output_file_name, "_BSAB_marker_boxplot.pdf")
+plot_name4=paste0(output_file_name, "_BSAB_markerpairs.pdf")
+table_name <- paste0(output_file_name, "_BSABS_top30_pairtable.csv")
+
+
+print("Generating All Marker Pair Overview Plot")
+
+pdf(plot_name1, width = 10, height = 4)
 {
   plot_bsabs(small_res,label='case',pval_cut_off=0.01,pair_score_cut_off=quantile(small_res$pair_score,.99))
-  print(barplot(boxplot,las=2, main='Density of genes across bispecific pairs',cex.names=0.9,col=c('black','white'),ylim=c(0,0.5)))
 
+}
+dev.off()
+
+
+print("Generating Marker Pair Table")
+
+assign("Marker_pair_table_all", result_table,  envir = .GlobalEnv)
+
+Marker_pair_table_top30=data.frame()
+
+if(nrow(result_table)>30)
+
+{
+  Marker_pair_table_top30=result_table[c(1:30),]
+
+} else
+
+{
+  Marker_pair_table_top30=result_table
+
+}
+
+
+write.csv(Marker_pair_table_top30, table_name ,row.names = FALSE)
+
+assign("Marker_pair_table_top30", Marker_pair_table_top30,  envir = .GlobalEnv)
+
+
+marker_list1=c(Marker_pair_table_top30$antigen_1,Marker_pair_table_top30$antigen_2)
+
+marker_counts <- table(marker_list1)
+marker_counts_df <- as.data.frame(marker_counts)
+names(marker_counts_df) <- c("Marker", "Frequency")
+marker_counts_df <- marker_counts_df[order(-marker_counts_df$Frequency), ]
+marker_counts_df$Marker <- factor(marker_counts_df$Marker, levels = marker_counts_df$Marker)
+proxy_var <- as.numeric(marker_counts_df$Frequency)
+
+gg_freq<-ggplot(marker_counts_df, aes(x= Marker, y=Frequency, fill=proxy_var)) +
+  geom_bar(stat="identity")+
+  scale_y_continuous(breaks = seq(0, max(marker_counts_df$Frequency)+2, by = 2), limits = c(0, max(marker_counts_df$Frequency)))+
+  theme(axis.text.x = element_text(angle=45, hjust=1))+
+  labs(x = "Marker", y = "Frequency", title = "Marker Frequency among top 30 BSAB pairs")+
+  scale_fill_gradient(low = "black",high = "black", guide = "none")
+
+
+pdf(plot_name2, width = 10, height = 5)
+{
+  #plot_bsabs(small_res,label='case',pval_cut_off=0.01,pair_score_cut_off=quantile(small_res$pair_score,.99))
+  print(barplot(boxplot,las=2, main='Density of markers across all bispecific pairs',cex.names=0.9,col=c('black','white'),ylim=c(0,0.5)))
+  print(gg_freq)
 }
 
 dev.off()
+
+marker_list=unique(marker_list1)
+
+print("Top Markers are:")
+print(marker_list)
+
+print("Generating Marker boxplots")
+data_a=case_with_control_expr[rownames(case_with_control_expr)%in%marker_list,]
+data_a=as.data.frame(t(data_a))
+data_a=data_a[,order(colnames(data_a))]
+data_a$Sample=ifelse(rownames(data_a)%in%case_id,"CASE","CONTROL")
+
+data_b=healthy_tissues_expr[,colnames(healthy_tissues_expr)%in%marker_list]
+data_b$Sample=healthy_tissues_expr$Sample
+
+#colnames(data_a)==colnames(data_b)
+
+common=length(intersect(rownames(data_a),rownames(data_b)))
+
+if (common>0)
+{
+  com_samp=intersect(rownames(data_a),rownames(data_b))
+  data_b=data_b[!rownames(data_b)%in%com_samp,]
+
 }
+
+marker_expr=rbind(data_a,data_b)
+
+assign("Marker_Expression", marker_expr,  envir = .GlobalEnv)
+
+plot_marker_boxplot(marker_expr,marker_list,plot_name3)
+
+print("Generating Markerpair volacano plots")
+
+plot_markerpair_volcano(marker_expr,Marker_pair_table_top30,plot_name4)
+
+}
+
+
+
