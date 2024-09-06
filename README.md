@@ -99,7 +99,7 @@ download_seurat_object(object_name = "HCC_GSE151530",save_dir = getwd())
 ## **Please cite**
 Evgenii Chekalin, Shreya Paithankar, Rama Shankar, Jing Xing, Wenfeng Xu, Bin Chen, Computational discovery of co-expressed antigens as dual targeting candidates for cancer therapy through bulk, single-cell, and spatial transcriptomics, Bioinformatics Advances, Volume 4, Issue 1, 2024, vbae096, https://doi.org/10.1093/bioadv/vbae096
 
-# For more transcriptomics-based tools, check out http://apps.octad.org/   
+### For more transcriptomics-based tools, check out http://apps.octad.org/   
   
 
 
