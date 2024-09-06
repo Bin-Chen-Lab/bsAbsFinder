@@ -96,7 +96,8 @@ download_seurat_object(object_name = "HCC_GSE151530",save_dir = getwd())
 - [FIG5](https://chenlab-data-public.s3.us-west-2.amazonaws.com/BISPECIFIC_ANTIBODY/Single_cell_data/FIG5_HCC.zip)
 - [FIG6](https://chenlab-data-public.s3.us-west-2.amazonaws.com/BISPECIFIC_ANTIBODY/Single_cell_data/FIG6AB_COEXPRESSION_PLOT.zip)
 
-  
+Please cite:
+Evgenii Chekalin, Shreya Paithankar, Rama Shankar, Jing Xing, Wenfeng Xu, Bin Chen, Computational discovery of co-expressed antigens as dual targeting candidates for cancer therapy through bulk, single-cell, and spatial transcriptomics, Bioinformatics Advances, Volume 4, Issue 1, 2024, vbae096, https://doi.org/10.1093/bioadv/vbae096
 
   
   
