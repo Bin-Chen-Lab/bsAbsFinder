@@ -70,6 +70,8 @@ case_with_control_expr=cbind(case_expr,control_expr)
 #convert ensg to hgnc and select surface-expressed genes according to  compartments.jensenlab.org
 case_with_control_expr=ensg_to_hgnc(case_with_control_expr,select_surface=TRUE)
 
+rownames(case_with_control_expr) <- gsub("HLA-", "HLA_", rownames(case_with_control_expr))
+colnames(healthy_tissues_expr)<- gsub("HLA-", "HLA_", colnames(healthy_tissues_expr))
 
 phenotype_vector= as.factor(c(rep('case',ncol(case_expr)),rep('control',ncol(control_expr))))
 
@@ -179,7 +181,7 @@ pdf(plot_name2, width = 10, height = 5)
 {
   #plot_bsabs(small_res,label='case',pval_cut_off=0.01,pair_score_cut_off=quantile(small_res$pair_score,.99))
   print(barplot(boxplot,las=2, main='Density of markers across all bispecific pairs',cex.names=0.9,col=c('black','white'),ylim=c(0,0.5)))
-  print(gg_freq)
+  #print(gg_freq)
 }
 
 dev.off()
