@@ -16,7 +16,7 @@ install_github("Bin-Chen-Lab/octad.db")
 install_github("Bin-Chen-Lab/octad")
 
 devtools::install_github('shreya1704/bsAbsFinder')
-library(bsabsfinder)
+library(bsAbsFinder)
 
 ```
 ## **Input**
@@ -25,8 +25,8 @@ To use the package, provide the name of a particular cancer (case) and its norma
 
 Following code snippet displays the number of samples for various cancers and normal tissues. Select from that list.
 ```r
-total_cancer_count=bsabsfinder::total_cancer_count
-total_normal_count=bsabsfinder::total_normal_count
+total_cancer_count=bsAbsFinder::total_cancer_count
+total_normal_count=bsAbsFinder::total_normal_count
 ```
 Just replace the 'liver hepatocellular carcinoma' and 'LIVER' in below code with other cancer and its corresponding healthy tissue.<br><br>
 The input is case sensitive so please add it accordingly:<br>
