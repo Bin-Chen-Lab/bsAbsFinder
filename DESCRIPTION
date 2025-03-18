@@ -1,4 +1,4 @@
-Package: bsabsfinder
+Package: bsAbsFinder
 Title: Identification of bispecific antibody targets for cancers
 Version: 0.0.0.9001
 Authors@R: 
