@@ -16,7 +16,8 @@ data=na.omit(data)
 data$GenestableID=NULL
 data$GENEID=NULL
 if(select_surface==TRUE){
-data=data[row.names(data)%in%basabsfinder::surface_expressed_genes$Gene,]
+#data=data[row.names(data)%in%bsabsfinder::surface_expressed_genes$Gene,]
+data=data[row.names(data)%in%surface_expressed_genes$Gene,]
 }
 return(data)
 }
